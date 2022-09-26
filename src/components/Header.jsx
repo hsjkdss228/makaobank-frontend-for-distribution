@@ -1,16 +1,21 @@
 import { Link } from 'react-router-dom';
 
 import styled from 'styled-components';
+import ToggleThemeButton from './ui/ToggleThemeButton';
 
 const Container = styled.header`
   width: 100%;
   padding: 1em;
 
-  background: linear-gradient(269.99deg, #A79FFF 0.01%, #F29FFF 99.99%);
+  background: ${(props) => props.theme.colors.panel};
 
   nav {
+    display: flex;
+    justify-content: space-between;
+
     ul {
       display: flex;
+      align-items: center;
       margin-left: 10em;
     }
 
@@ -20,7 +25,7 @@ const Container = styled.header`
   }
 `;
 
-export default function Header() {
+export default function Header({ toggleThemeButtonClick }) {
   return (
     <Container>
       <nav>
@@ -46,6 +51,10 @@ export default function Header() {
             </Link>
           </li>
         </ul>
+        <ToggleThemeButton
+          type="button"
+          onClick={toggleThemeButtonClick}
+        />
       </nav>
     </Container>
   );
