@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLocalStorage } from 'usehooks-ts';
 
 import { Routes, Route } from 'react-router-dom';
 
@@ -17,11 +17,13 @@ import defaultTheme from './styles/defaultTheme';
 import darkTheme from './styles/darkTheme';
 
 export default function App() {
-  const [theme, setTheme] = useState(defaultTheme);
+  const [themeName, setThemeName] = useLocalStorage('theme', 'default');
 
   const toggleTheme = () => {
-    setTheme(theme === defaultTheme ? darkTheme : defaultTheme);
+    setThemeName(themeName === 'default' ? 'dark' : 'default');
   };
+
+  const theme = themeName === 'dark' ? darkTheme : defaultTheme;
 
   return (
     <ThemeProvider theme={theme}>
