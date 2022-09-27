@@ -17,6 +17,18 @@ export default class ApiService {
       amount: data.amount,
     };
   }
+
+  async fetchAccount() {
+    const url = `${baseUrl}/accounts/me`;
+    // TODO: access token을 header로 넘겨줄 것!
+    const { data } = await axios.get(url);
+
+    return {
+      name: data.name,
+      accountNumber: data.accountNumber,
+      amount: data.amount,
+    };
+  }
 }
 
 export const apiService = new ApiService();

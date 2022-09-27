@@ -12,8 +12,7 @@ const server = setupServer(
     console.log('로그인 시도 (msw)');
 
     const { accountNumber, password } = await request.json();
-    
-    console.log('응답 완료 (msw)');
+    console.log('로그인 응답 완료 (msw)');
 
     if (accountNumber === '352' && password === 'password') {
       return response(context.json({
@@ -24,6 +23,15 @@ const server = setupServer(
     }
 
     return response(context.status(400));
+  }),
+  rest.get(`${baseUrl}/accounts/me`, async (request, response, context) => {
+    console.log('계좌 정보 로딩 시도 (msw)');
+
+    return response(context.json({
+      name: '황인우',
+      accountNumber: '352',
+      amount: 1_000_000,
+    }));
   }),
 );
 

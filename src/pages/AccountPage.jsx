@@ -1,15 +1,17 @@
+import { useEffect } from 'react';
+
+import useBankStore from '../hooks/useBankStore';
+
+import Account from '../components/Account';
+
 export default function AccountPage() {
+  const bankStore = useBankStore();
+
+  useEffect(() => {
+    bankStore.fetchAccount();
+  }, []);
+
   return (
-    <div>
-      <p>
-        이름: 김인우
-      </p>
-      <p>
-        계좌번호: 352
-      </p>
-      <p>
-        잔액: 0원
-      </p>
-    </div>
+    <Account />
   );
 }

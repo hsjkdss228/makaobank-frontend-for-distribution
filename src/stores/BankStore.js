@@ -2,10 +2,24 @@ import { apiService } from '../services/ApiService';
 
 export default class BankStore {
   constructor() {
+    this.listeners = new Set();
+
     this.name = '';
     this.accountNumber = '';
     this.amount = 0;
     this.transactions = [];
+  }
+
+  subscribe(listener) {
+    this.listeners.add(listener);
+  }
+
+  unsubscribe(listener) {
+    this.listeners.delete(listener);
+  }
+
+  publish() {
+    this.listeners.forEach((listener) => listener());
   }
 
   async login({ accountNumber, password }) {
@@ -21,6 +35,16 @@ export default class BankStore {
     } catch (exception) {
       return '';
     }
+  }
+
+  async fetchAccount() {
+    const { name, accountNumber, amount } = await apiService.fetchAccount();
+
+    this.name = name;
+    this.accountNumber = accountNumber;
+    this.amount = amount;
+
+    this.publish();
   }
 }
 
