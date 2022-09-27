@@ -25,7 +25,7 @@ const Container = styled.header`
   }
 `;
 
-export default function Header({ toggleThemeButtonClick }) {
+export default function Header({ toggleThemeButtonClick, handleLogin }) {
   return (
     <Container>
       <nav>
@@ -55,6 +55,12 @@ export default function Header({ toggleThemeButtonClick }) {
           type="button"
           onClick={toggleThemeButtonClick}
         />
+        <button
+          type="button"
+          onClick={handleLogin}
+        >
+          로그인
+        </button>
       </nav>
     </Container>
   );

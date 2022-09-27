@@ -1,3 +1,5 @@
+import { apiService } from '../services/ApiService';
+
 export default class BankStore {
   constructor() {
     this.name = '';
@@ -6,12 +8,20 @@ export default class BankStore {
     this.transactions = [];
   }
 
-  login({ accountNumber, password }) {
-    if (accountNumber !== '352' || password !== 'password') {
-      return;
-    }
+  async login({ accountNumber, password }) {
+    try {
+      const { accessToken, name, amount } = await apiService.postSession({
+        accountNumber, password,
+      });
 
-    this.name = '황인우';
-    this.amount = 1_000_000;
+      this.name = name;
+      this.amount = amount;
+
+      return accessToken;
+    } catch (exception) {
+      return '';
+    }
   }
 }
+
+export const bankStore = new BankStore();
