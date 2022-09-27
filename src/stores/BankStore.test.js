@@ -1,19 +1,5 @@
 import BankStore from './BankStore';
 
-import server from '../testServer';
-
-beforeAll(() => {
-  server.listen();
-});
-
-afterEach(() => {
-  server.resetHandlers();
-});
-
-afterAll(() => {
-  server.close();
-});
-
 const context = describe;
 
 describe('BankStore', () => {

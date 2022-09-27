@@ -16,7 +16,7 @@ const Container = styled.header`
     ul {
       display: flex;
       align-items: center;
-      margin-left: 10em;
+      margin-left: 15%;
     }
 
     li {
