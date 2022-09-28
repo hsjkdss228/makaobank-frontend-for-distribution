@@ -29,6 +29,11 @@ export default class ApiService {
       amount: data.amount,
     };
   }
+
+  async createTransaction({ to, amount, name }) {
+    const url = `${baseUrl}/transactions`;
+    await axios.post(url, { to, amount, name });
+  }
 }
 
 export const apiService = new ApiService();

@@ -8,6 +8,10 @@ export default class BankStore {
     this.accountNumber = '';
     this.amount = 0;
     this.transactions = [];
+
+    this.transferState = '';
+
+    this.errorMessage = '';
   }
 
   subscribe(listener) {
@@ -45,6 +49,37 @@ export default class BankStore {
     this.amount = amount;
 
     this.publish();
+  }
+
+  async requestTransfer({ to, amount, name }) {
+    this.changeTransferState('PROCESSING');
+
+    try {
+      await apiService.createTransaction({ to, amount, name });
+      this.changeTransferState('SUCCESS');
+    } catch (error) {
+      // console.log(error.response.data);
+      const { message } = error.response.data;
+      this.changeTransferState('FAIL', { errorMessage: message });
+    }
+  }
+
+  changeTransferState(state, { errorMessage = '' } = {}) {
+    this.transferState = state;
+    this.errorMessage = errorMessage;
+    this.publish();
+  }
+
+  get isTransferProcessing() {
+    return this.transferState === 'PROCESSING';
+  }
+
+  get isTransferSuccess() {
+    return this.transferState === 'SUCCESS';
+  }
+
+  get isTransferFail() {
+    return this.transferState === 'FAIL';
   }
 }
 

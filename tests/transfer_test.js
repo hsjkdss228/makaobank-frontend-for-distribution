@@ -1,8 +1,14 @@
 Feature('Transfer detail');
 
+const numberFormat = (number) => Intl.NumberFormat().format(number);
+
+const amount = 456000000;
+
 // Given
 Before(({ I }) => {
   // TODO: 계좌 설정
+  I.setupDatabase();
+  I.changeAmount({ userId: 1, amount });
 
   I.amOnPage('/');
 
@@ -24,10 +30,12 @@ Scenario('송금 UI 출력 확인', ({ I }) => {
 });
 
 Scenario('정상적으로 송금이 되는 경우', ({ I }) => {
+  const transferAmount = 10000;
+
   // When
   I.click('송금');
   I.fillField('받는 분 계좌번호:', '179');
-  I.fillField('보낼금액(원):', '10000');
+  I.fillField('보낼금액(원):', transferAmount);
   I.fillField('받는 분 통장 표시:', '김인우');
   I.click('보내기');
 
@@ -35,19 +43,25 @@ Scenario('정상적으로 송금이 되는 경우', ({ I }) => {
   // I.see('송금 진행중...');
   // I.limitTime(2).see('계좌 이체에 성공했습니다.');
   I.see('계좌 이체에 성공했습니다.');
+
+  // 잔액 확인
+  I.click('잔액확인');
+  I.see('이름: 김인우');
+  I.see('계좌번호: 352');
+  I.see(`잔액: ${numberFormat(amount - transferAmount)}원`);
 });
 
-// Scenario('없는 계좌번호에 송금을 시도하는 경우', ({ I }) => {
-//   // When
-//   I.click('송금');
-//   I.fillField('받는 분 계좌번호:', '666666');
-//   I.fillField('보낼금액(원):', '10000');
-//   I.fillField('받는 분 통장 표시:', '김인우');
-//   I.click('보내기');
+Scenario('없는 계좌번호에 송금을 시도하는 경우', ({ I }) => {
+  // When
+  I.click('송금');
+  I.fillField('받는 분 계좌번호:', '666666');
+  I.fillField('보낼금액(원):', '10000');
+  I.fillField('받는 분 통장 표시:', '김인우');
+  I.click('보내기');
 
-//   // Then
-//   I.see('잘못된 계좌번호입니다. 다시 입력해주세요.');
-// });
+  // Then
+  I.see('잘못된 계좌번호입니다. 다시 입력해주세요.');
+});
 
 // Scenario('본인의 계좌번호에 송금을 시도하는 경우', ({ I }) => {
 //   // When
@@ -82,6 +96,20 @@ Scenario('정상적으로 송금이 되는 경우', ({ I }) => {
 //   // Then
 //   I.see('금액을 입력해주세요.');
 // });
+
+Scenario('보유 금액이 보낼 금액보다 부족한 경우', ({ I }) => {
+  const transferAmount = amount + 544000000;
+
+  // When
+  I.click('송금');
+  I.fillField('받는 분 계좌번호:', '352');
+  I.fillField('보낼금액(원):', transferAmount);
+  I.fillField('받는 분 통장 표시:', '김인우');
+  I.click('보내기');
+
+  // Then
+  I.see('계좌 잔액이 부족합니다.');
+});
 
 // Scenario('받는 분 통장 표시를 입력하지 않은 경우', ({ I }) => {
 //   // When

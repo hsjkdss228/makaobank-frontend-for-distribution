@@ -2,7 +2,7 @@ Feature('Transactions detail');
 
 // Given
 Before(({ I }) => {
-  // TODO: 계좌 설정 및 송금 처리
+  I.setupDatabase();
 
   I.amOnPage('/');
 
@@ -22,7 +22,16 @@ Before(({ I }) => {
 // });
 
 Scenario('거래 내역이 존재하는 경우 (송금만)', ({ I }) => {
+  // Given
+  I.click('송금');
+  I.fillField('받는 분 계좌번호:', '179');
+  I.fillField('보낼금액(원):', '10000');
+  I.fillField('받는 분 통장 표시:', '김인우');
+  I.click('보내기');
+  I.see('계좌 이체에 성공했습니다.');
+
   // When
+  I.amOnPage('/');
   I.click('거래내역');
 
   // Then

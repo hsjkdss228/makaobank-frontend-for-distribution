@@ -9,10 +9,10 @@ const baseUrl = config.apiBaseUrl;
 
 const server = setupServer(
   rest.post(`${baseUrl}/session`, async (request, response, context) => {
-    console.log('로그인 시도 (msw)');
+    // console.log('로그인 시도 (msw)');
 
     const { accountNumber, password } = await request.json();
-    console.log('로그인 응답 완료 (msw)');
+    // console.log('로그인 응답 완료 (msw)');
 
     if (accountNumber === '352' && password === 'password') {
       return response(context.json({
@@ -32,6 +32,19 @@ const server = setupServer(
       accountNumber: '352',
       amount: 1_000_000,
     }));
+  }),
+  rest.post(`${baseUrl}/transactions`, async (request, response, context) => {
+    const { amount } = await request.json();
+    if (amount <= 0) {
+      return response(
+        context.status(400),
+        context.json({
+          code: 1002,
+          message: '금액이 잘못됐습니다',
+        }),
+      );
+    }
+    return response(context.status(200));
   }),
 );
 
