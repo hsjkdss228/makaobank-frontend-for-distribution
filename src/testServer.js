@@ -46,6 +46,15 @@ const server = setupServer(
     }
     return response(context.status(200));
   }),
+  rest.get(`${baseUrl}/transactions`, async (request, response, context) => (
+    response(context.json({
+      transactions: [
+        {
+          id: 1, activity: '송금', name: '179', amount: 3_000,
+        },
+      ],
+    }))
+  )),
 );
 
 export default server;

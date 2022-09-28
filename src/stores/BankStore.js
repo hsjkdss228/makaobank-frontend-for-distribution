@@ -64,6 +64,14 @@ export default class BankStore {
     }
   }
 
+  async fetchTransactions() {
+    this.transactions = [];
+    this.publish();
+
+    this.transactions = await apiService.fetchTransactions();
+    this.publish();
+  }
+
   changeTransferState(state, { errorMessage = '' } = {}) {
     this.transferState = state;
     this.errorMessage = errorMessage;

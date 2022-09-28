@@ -22,8 +22,8 @@ export default function TransferForm() {
   }, []);
 
   const onSubmit = async (data) => {
-    const { accountNumber, amount, name } = data;
-    await bankStore.requestTransfer({ to: accountNumber, amount, name });
+    const { accountNumber, amount, sender } = data;
+    await bankStore.requestTransfer({ to: accountNumber, amount, name: sender });
   };
 
   return (
