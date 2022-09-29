@@ -27,6 +27,17 @@ export default class ApiService {
     };
   }
 
+  async register({
+    name, accountNumber, password, confirmPassword,
+  }) {
+    console.log(`${name} ${accountNumber} ${password} ${confirmPassword}`);
+
+    const url = `${baseUrl}/users`;
+    await axios.post(url, {
+      name, accountNumber, password, confirmPassword,
+    });
+  }
+
   async fetchAccount() {
     const url = `${baseUrl}/accounts/me`;
 
@@ -35,6 +46,8 @@ export default class ApiService {
         Authorization: `Bearer ${this.accessToken}`,
       },
     });
+
+    console.log(data);
 
     return {
       name: data.name,

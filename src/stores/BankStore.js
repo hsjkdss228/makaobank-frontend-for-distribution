@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import { apiService } from '../services/ApiService';
 
 export default class BankStore {
@@ -8,6 +9,19 @@ export default class BankStore {
     this.accountNumber = '';
     this.amount = 0;
     this.transactions = [];
+
+    this.loginState = '';
+
+    this.emptyName = '';
+    this.emptyAccountNumber = '';
+    this.emptyPassword = '';
+    this.emptyConfirmPassword = '';
+    this.incorrectName = '';
+    this.incorrectAccountNumber = '';
+    this.incorrectPassword = '';
+    this.alreadyExistingAccountNumber = '';
+    this.passwordDoNotMatch = '';
+    this.registerDefaultError = '';
 
     this.transferState = '';
 
@@ -36,10 +50,80 @@ export default class BankStore {
       this.amount = amount;
 
       return accessToken;
-    } catch (exception) {
-      // console.error(e);
+    } catch (error) {
+      const { message } = error.response.data;
+      this.changeLoginState('FAIL', { errorMessage: message });
       return '';
     }
+  }
+
+  changeLoginState(state, { errorMessage = '' } = {}) {
+    this.loginState = state;
+    this.errorMessage = errorMessage;
+    this.publish();
+  }
+
+  get isLoginFailed() {
+    return this.loginState === 'FAIL';
+  }
+
+  async register({
+    name, accountNumber, password, confirmPassword,
+  }) {
+    try {
+      await apiService.register({
+        name, accountNumber, password, confirmPassword,
+      });
+    } catch (error) {
+      const { codesAndMessages } = error.response.data;
+      // console.log(typeof error.response.data.codesAndMessages);
+      this.changeRegisterState(codesAndMessages);
+    }
+  }
+
+  changeRegisterState(codesAndMessages) {
+    this.emptyName = '';
+    this.emptyAccountNumber = '';
+    this.emptyPassword = '';
+    this.emptyConfirmPassword = '';
+    this.incorrectName = '';
+    this.incorrectAccountNumber = '';
+    this.incorrectPassword = '';
+    this.alreadyExistingAccountNumber = '';
+    this.passwordDoNotMatch = '';
+    this.registerDefaultError = '';
+
+    if (codesAndMessages.hasOwnProperty('2000')) {
+      this.emptyName = codesAndMessages['2000'];
+    }
+    if (codesAndMessages.hasOwnProperty('2001')) {
+      this.emptyAccountNumber = codesAndMessages['2001'];
+    }
+    if (codesAndMessages.hasOwnProperty('2002')) {
+      this.emptyPassword = codesAndMessages['2002'];
+    }
+    if (codesAndMessages.hasOwnProperty('2003')) {
+      this.emptyConfirmPassword = codesAndMessages['2003'];
+    }
+    if (codesAndMessages.hasOwnProperty('2004')) {
+      this.incorrectName = codesAndMessages['2004'];
+    }
+    if (codesAndMessages.hasOwnProperty('2005')) {
+      this.incorrectAccountNumber = codesAndMessages['2005'];
+    }
+    if (codesAndMessages.hasOwnProperty('2006')) {
+      this.incorrectPassword = codesAndMessages['2006'];
+    }
+    if (codesAndMessages.hasOwnProperty('2007')) {
+      this.alreadyExistingAccountNumber = codesAndMessages['2007'];
+    }
+    if (codesAndMessages.hasOwnProperty('2008')) {
+      this.passwordDoNotMatch = codesAndMessages['2008'];
+    }
+    if (codesAndMessages.hasOwnProperty('2009')) {
+      this.registerDefaultError = codesAndMessages['2009'];
+    }
+    this.publish();
   }
 
   async fetchAccount() {
@@ -59,18 +143,9 @@ export default class BankStore {
       await apiService.createTransaction({ to, amount, name });
       this.changeTransferState('SUCCESS');
     } catch (error) {
-      // console.log(error.response.data);
       const { message } = error.response.data;
       this.changeTransferState('FAIL', { errorMessage: message });
     }
-  }
-
-  async fetchTransactions() {
-    this.transactions = [];
-    this.publish();
-
-    this.transactions = await apiService.fetchTransactions();
-    this.publish();
   }
 
   changeTransferState(state, { errorMessage = '' } = {}) {
@@ -89,6 +164,14 @@ export default class BankStore {
 
   get isTransferFail() {
     return this.transferState === 'FAIL';
+  }
+
+  async fetchTransactions() {
+    this.transactions = [];
+    this.publish();
+
+    this.transactions = await apiService.fetchTransactions();
+    this.publish();
   }
 }
 

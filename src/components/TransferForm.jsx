@@ -95,7 +95,9 @@ export default function TransferForm() {
         ) : null}
       {bankStore.isTransferFail
         ? (
-          <Error>{bankStore.errorMessage}</Error>
+          <Error>
+            {bankStore.errorMessage}
+          </Error>
         ) : null}
     </form>
   );
