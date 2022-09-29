@@ -8,6 +8,7 @@ export default function AccountPage() {
   const bankStore = useBankStore();
 
   useEffect(() => {
+    console.log('fetch account');
     bankStore.fetchAccount();
   }, []);
 

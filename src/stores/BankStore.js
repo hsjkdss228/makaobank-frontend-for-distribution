@@ -37,6 +37,7 @@ export default class BankStore {
 
       return accessToken;
     } catch (exception) {
+      // console.error(e);
       return '';
     }
   }

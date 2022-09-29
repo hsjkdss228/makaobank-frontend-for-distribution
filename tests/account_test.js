@@ -6,9 +6,9 @@ Before(({ I }) => {
   // GET /backdoor/setup-database
   I.setupDatabase();
 
-  I.amOnPage('/');
+  I.login('352');
 
-  // TODO: 로그인
+  I.amOnPage('/');
 });
 
 Scenario('잔액 미보유', ({ I }) => {

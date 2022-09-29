@@ -10,9 +10,9 @@ Before(({ I }) => {
   I.setupDatabase();
   I.changeAmount({ userId: 1, amount });
 
-  I.amOnPage('/');
+  I.login('352');
 
-  // TODO: 로그인
+  I.amOnPage('/');
 });
 
 Scenario('송금 UI 출력 확인', ({ I }) => {

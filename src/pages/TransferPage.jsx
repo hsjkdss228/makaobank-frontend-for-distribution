@@ -1,4 +1,4 @@
-import TransferForm from './TransferForm';
+import TransferForm from '../components/TransferForm';
 
 export default function TransferPage() {
   return (

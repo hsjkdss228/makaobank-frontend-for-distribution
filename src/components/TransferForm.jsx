@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import numberFormat from '../components/utils/numberFormat';
+import numberFormat from './utils/numberFormat';
 
 import useBankStore from '../hooks/useBankStore';
 
