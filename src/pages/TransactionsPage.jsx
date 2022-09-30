@@ -1,19 +1,26 @@
 import { useEffect } from 'react';
 
+import { useLocalStorage } from 'usehooks-ts';
+
 import useBankStore from '../hooks/useBankStore';
 
 import Transactions from '../components/Transactions';
+import LoginForm from '../components/LoginForm';
 
 export default function TransactionsPage() {
+  const [accessToken] = useLocalStorage('accessToken', '');
+
   const bankStore = useBankStore();
 
   useEffect(() => {
     bankStore.fetchTransactions();
   }, []);
 
-  // TODO: 로그인 안되어있으면 로그인 페이지로 보내야 함
-
   return (
-    <Transactions />
+    accessToken ? (
+      <Transactions />
+    ) : (
+      <LoginForm />
+    )
   );
 }
