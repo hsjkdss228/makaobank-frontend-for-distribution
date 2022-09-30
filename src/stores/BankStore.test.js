@@ -106,7 +106,7 @@ describe('BankStore', () => {
       it('에러 메세지를 설정', async () => {
         await requestWrongTransfer();
 
-        expect(bankStore.errorMessage).toBeTruthy();
+        expect(bankStore.transferIncorrectAmount).toBeTruthy();
       });
     });
   });

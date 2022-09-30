@@ -5,26 +5,31 @@ import { useLocalStorage } from 'usehooks-ts';
 import styled from 'styled-components';
 
 import ToggleThemeButton from './ui/ToggleThemeButton';
+import HeaderButton from './ui/HeaderButton';
 
 const Container = styled.header`
   width: 100%;
-  padding: 1em;
-
+  padding: .7em;
   background: ${(props) => props.theme.colors.panel};
-
+  display: flex;
+  justify-content: space-around;
   nav {
     display: flex;
     justify-content: space-between;
-
     ul {
       display: flex;
       align-items: center;
-      margin-left: 15%;
     }
-
     li {
-      margin-right: 3em;
+      font-size: .9em;
+      margin-right: 4em;
     }
+  }
+`;
+
+const Sessions = styled.div`
+  * {
+    margin-inline: .3em;
   }
 `;
 
@@ -75,36 +80,36 @@ export default function Header({ toggleThemeButtonClick }) {
             </>
           ) : null}
         </ul>
+      </nav>
+      <Sessions>
         <ToggleThemeButton
           type="button"
           onClick={toggleThemeButtonClick}
         />
         {accessToken ? (
-          <button
+          <HeaderButton
             type="button"
             onClick={handleLogout}
           >
             로그아웃
-          </button>
+          </HeaderButton>
         ) : (
           <>
-            <button
+            <HeaderButton
               type="button"
               onClick={handleRegister}
             >
               회원가입
-            </button>
-            <button
+            </HeaderButton>
+            <HeaderButton
               type="button"
               onClick={handleLogin}
             >
               로그인
-            </button>
+            </HeaderButton>
           </>
-
         )}
-
-      </nav>
+      </Sessions>
     </Container>
   );
 }

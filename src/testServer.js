@@ -39,7 +39,7 @@ const server = setupServer(
       return response(
         context.status(400),
         context.json({
-          code: 1002,
+          code: 3005,
           message: '금액이 잘못됐습니다',
         }),
       );

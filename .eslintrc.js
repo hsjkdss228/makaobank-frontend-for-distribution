@@ -45,5 +45,6 @@ module.exports = {
     'arrow-spacing': ['error', { before: true, after: true }],
     'react/prop-types': 'off',
     'jsx-a11y/label-has-associated-control': ['error', { assert: 'either' }],
+    'no-nested-ternary': 'off',
   },
 };

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const ToggleThemeButton = styled.button`
-  padding: 1.5em;
+  padding: 1em;
   border: none;
   background-color: transparent;
   background-image: url(${(props) => props.theme.icon.toggleButtonImage});

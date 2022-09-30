@@ -28,8 +28,13 @@ export default class BankStore {
     this.createdUserName = '';
 
     this.transferState = '';
-
-    this.errorMessage = '';
+    this.transferEmptyAccountNumber = '';
+    this.transferEmptyAmount = '';
+    this.transferEmptyName = '';
+    this.transferAccountNotFound = '';
+    this.transferTransferToMyAccount = '';
+    this.transferIncorrectAmount = '';
+    this.transferInsufficientAmount = '';
   }
 
   subscribe(listener) {
@@ -167,14 +172,48 @@ export default class BankStore {
       await apiService.createTransaction({ to, amount, name });
       this.changeTransferState('SUCCESS');
     } catch (error) {
-      const { message } = error.response.data;
-      this.changeTransferState('FAIL', { errorMessage: message });
+      const { code, message } = error.response.data;
+      this.changeTransferState('FAIL', { code, message });
     }
   }
 
-  changeTransferState(state, { errorMessage = '' } = {}) {
+  clearTransferState() {
+    this.transferEmptyAccountNumber = '';
+    this.transferEmptyAmount = '';
+    this.transferEmptyName = '';
+    this.transferAccountNotFound = '';
+    this.transferTransferToMyAccount = '';
+    this.transferIncorrectAmount = '';
+    this.transferInsufficientAmount = '';
+  }
+
+  changeTransferState(state, { code = '', message = '' } = {}) {
+    this.clearTransferState();
+
     this.transferState = state;
-    this.errorMessage = errorMessage;
+
+    if (code === 3000) {
+      this.transferEmptyAccountNumber = message;
+    }
+    if (code === 3001) {
+      this.transferEmptyAmount = message;
+    }
+    if (code === 3002) {
+      this.transferEmptyName = message;
+    }
+    if (code === 3003) {
+      this.transferAccountNotFound = message;
+    }
+    if (code === 3004) {
+      this.transferTransferToMyAccount = message;
+    }
+    if (code === 3005) {
+      this.transferIncorrectAmount = message;
+    }
+    if (code === 3006) {
+      this.transferInsufficientAmount = message;
+    }
+
     this.publish();
   }
 
