@@ -10,18 +10,22 @@ export default class BankStore {
     this.amount = 0;
     this.transactions = [];
 
-    this.loginState = '';
+    this.loginEmptyAccountNumber = '';
+    this.loginEmptyPassword = '';
+    this.loginAccountNumberOrPasswordDoNotMatch = '';
 
-    this.emptyName = '';
-    this.emptyAccountNumber = '';
-    this.emptyPassword = '';
-    this.emptyConfirmPassword = '';
-    this.incorrectName = '';
-    this.incorrectAccountNumber = '';
-    this.incorrectPassword = '';
-    this.alreadyExistingAccountNumber = '';
-    this.passwordDoNotMatch = '';
+    this.registerEmptyName = '';
+    this.registerEmptyAccountNumber = '';
+    this.registerEmptyPassword = '';
+    this.registerEmptyConfirmPassword = '';
+    this.registerIncorrectName = '';
+    this.registerIncorrectAccountNumber = '';
+    this.registerIncorrectPassword = '';
+    this.registerAlreadyExistingAccountNumber = '';
+    this.registerPasswordDoNotMatch = '';
     this.registerDefaultError = '';
+
+    this.createdUserName = '';
 
     this.transferState = '';
 
@@ -51,78 +55,98 @@ export default class BankStore {
 
       return accessToken;
     } catch (error) {
-      const { message } = error.response.data;
-      this.changeLoginState('FAIL', { errorMessage: message });
+      const { code, message } = error.response.data;
+      this.changeLoginState({ code, message });
       return '';
     }
   }
 
-  changeLoginState(state, { errorMessage = '' } = {}) {
-    this.loginState = state;
-    this.errorMessage = errorMessage;
-    this.publish();
+  clearLoginState() {
+    this.loginEmptyAccountNumber = '';
+    this.loginEmptyPassword = '';
+    this.loginAccountNumberOrPasswordDoNotMatch = '';
   }
 
-  get isLoginFailed() {
-    return this.loginState === 'FAIL';
+  changeLoginState({ code, message }) {
+    this.clearLoginState();
+
+    if (code === 1000) {
+      this.loginEmptyAccountNumber = message;
+    }
+    if (code === 1001) {
+      this.loginEmptyPassword = message;
+    }
+    if (code === 1002) {
+      this.loginAccountNumberOrPasswordDoNotMatch = message;
+    }
+
+    this.publish();
   }
 
   async register({
     name, accountNumber, password, confirmPassword,
   }) {
     try {
-      await apiService.register({
+      this.createdUserName = await apiService.register({
         name, accountNumber, password, confirmPassword,
       });
+
+      return this.createdUserName;
     } catch (error) {
       const { codesAndMessages } = error.response.data;
       // console.log(typeof error.response.data.codesAndMessages);
       this.changeRegisterState(codesAndMessages);
+      return '';
     }
   }
 
-  changeRegisterState(codesAndMessages) {
-    this.emptyName = '';
-    this.emptyAccountNumber = '';
-    this.emptyPassword = '';
-    this.emptyConfirmPassword = '';
-    this.incorrectName = '';
-    this.incorrectAccountNumber = '';
-    this.incorrectPassword = '';
-    this.alreadyExistingAccountNumber = '';
-    this.passwordDoNotMatch = '';
+  clearRegisterState() {
+    this.registerEmptyName = '';
+    this.registerEmptyAccountNumber = '';
+    this.registerEmptyPassword = '';
+    this.registerEmptyConfirmPassword = '';
+    this.registerIncorrectName = '';
+    this.registerIncorrectAccountNumber = '';
+    this.registerIncorrectPassword = '';
+    this.registerAlreadyExistingAccountNumber = '';
+    this.registerPasswordDoNotMatch = '';
     this.registerDefaultError = '';
+  }
+
+  changeRegisterState(codesAndMessages) {
+    this.clearRegisterState();
 
     if (codesAndMessages.hasOwnProperty('2000')) {
-      this.emptyName = codesAndMessages['2000'];
+      this.registerEmptyName = codesAndMessages['2000'];
     }
     if (codesAndMessages.hasOwnProperty('2001')) {
-      this.emptyAccountNumber = codesAndMessages['2001'];
+      this.registerEmptyAccountNumber = codesAndMessages['2001'];
     }
     if (codesAndMessages.hasOwnProperty('2002')) {
-      this.emptyPassword = codesAndMessages['2002'];
+      this.registerEmptyPassword = codesAndMessages['2002'];
     }
     if (codesAndMessages.hasOwnProperty('2003')) {
-      this.emptyConfirmPassword = codesAndMessages['2003'];
+      this.registerEmptyConfirmPassword = codesAndMessages['2003'];
     }
     if (codesAndMessages.hasOwnProperty('2004')) {
-      this.incorrectName = codesAndMessages['2004'];
+      this.registerIncorrectName = codesAndMessages['2004'];
     }
     if (codesAndMessages.hasOwnProperty('2005')) {
-      this.incorrectAccountNumber = codesAndMessages['2005'];
+      this.registerIncorrectAccountNumber = codesAndMessages['2005'];
     }
     if (codesAndMessages.hasOwnProperty('2006')) {
-      this.incorrectPassword = codesAndMessages['2006'];
+      this.registerIncorrectPassword = codesAndMessages['2006'];
     }
     if (codesAndMessages.hasOwnProperty('2007')) {
-      this.alreadyExistingAccountNumber = codesAndMessages['2007'];
+      this.registerAlreadyExistingAccountNumber = codesAndMessages['2007'];
     }
     if (codesAndMessages.hasOwnProperty('2008')) {
-      this.passwordDoNotMatch = codesAndMessages['2008'];
+      this.registerPasswordDoNotMatch = codesAndMessages['2008'];
     }
     if (codesAndMessages.hasOwnProperty('2009')) {
       this.registerDefaultError = codesAndMessages['2009'];
     }
+
     this.publish();
   }
 

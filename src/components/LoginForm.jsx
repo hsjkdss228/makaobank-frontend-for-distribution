@@ -1,4 +1,4 @@
-import { useState } from 'react';
+/* eslint-disable no-nested-ternary */
 
 import { useNavigate } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ const Label = styled.label`
   color: transparent;
 `;
 
-const Error = styled.div`
+const Error = styled.p`
   color: #F00;  
 `;
 
@@ -28,40 +28,16 @@ export default function LoginForm() {
 
   const bankStore = useBankStore();
 
-  const { register, handleSubmit, formState: { isDirty, errors } } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const onSubmit = async (data) => {
     const { accountNumber, password } = data;
     const accessToken = await bankStore.login({ accountNumber, password });
     if (accessToken) {
+      bankStore.clearLoginState();
       setAccessToken(accessToken);
       navigate('/');
     }
-  };
-
-  const showErrorMessage = ({ blankAccountNumber, blankPassword }) => {
-    if (blankAccountNumber) {
-      return (
-        <Error>
-          아이디를 입력해주세요
-        </Error>
-      );
-    }
-    if (blankPassword) {
-      return (
-        <Error>
-          비밀번호를 입력해주세요
-        </Error>
-      );
-    }
-    if (bankStore.isLoginFailed) {
-      return (
-        <Error>
-          {bankStore.errorMessage}
-        </Error>
-      );
-    }
-    return null;
   };
 
   const handleRegister = () => {
@@ -72,30 +48,37 @@ export default function LoginForm() {
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2>USER LOGIN</h2>
-        <Label htmlFor="input-accountNumber">
-          아이디(계좌번호)
-        </Label>
-        <input
-          id="input-accountNumber"
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...register('accountNumber', { required: true })}
-          type="text"
-          placeholder="아이디(계좌번호)"
-        />
-        <Label htmlFor="input-password">
-          비밀번호
-        </Label>
-        <input
-          id="input-password"
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...register('password', { required: true })}
-          type="password"
-          placeholder="비밀번호"
-        />
-        {!isDirty ? showErrorMessage({
-          blankAccountNumber: errors.accountNumber,
-          blankPassword: errors.password,
-        }) : null}
+        <div>
+          <Label htmlFor="input-account-number">
+            아이디(계좌번호)
+          </Label>
+          <input
+            id="input-account-number"
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...register('accountNumber')}
+            type="text"
+            placeholder="아이디(계좌번호)"
+          />
+        </div>
+        <div>
+          <Label htmlFor="input-password">
+            비밀번호
+          </Label>
+          <input
+            id="input-password"
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            {...register('password')}
+            type="password"
+            placeholder="비밀번호"
+          />
+        </div>
+        {bankStore.loginEmptyAccountNumber ? (
+          <Error>{bankStore.loginEmptyAccountNumber}</Error>
+        ) : bankStore.loginEmptyPassword ? (
+          <Error>{bankStore.loginEmptyPassword}</Error>
+        ) : bankStore.loginAccountNumberOrPasswordDoNotMatch ? (
+          <Error>{bankStore.loginAccountNumberOrPasswordDoNotMatch}</Error>
+        ) : null}
         <button
           type="submit"
         >

@@ -30,12 +30,12 @@ export default class ApiService {
   async register({
     name, accountNumber, password, confirmPassword,
   }) {
-    console.log(`${name} ${accountNumber} ${password} ${confirmPassword}`);
-
     const url = `${baseUrl}/users`;
-    await axios.post(url, {
+    const { data } = await axios.post(url, {
       name, accountNumber, password, confirmPassword,
     });
+
+    return data.name;
   }
 
   async fetchAccount() {

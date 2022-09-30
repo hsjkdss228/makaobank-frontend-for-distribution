@@ -1,4 +1,7 @@
 /* eslint-disable no-nested-ternary */
+
+import { useNavigate } from 'react-router-dom';
+
 import { useForm } from 'react-hook-form';
 
 import styled from 'styled-components';
@@ -11,6 +14,8 @@ const Error = styled.p`
 `;
 
 export default function LoginForm() {
+  const navigate = useNavigate();
+
   const bankStore = useBankStore();
 
   const { register, handleSubmit } = useForm();
@@ -19,9 +24,14 @@ export default function LoginForm() {
     const {
       name, accountNumber, password, confirmPassword,
     } = data;
-    await bankStore.register({
+    const createdUserName = await bankStore.register({
       name, accountNumber, password, confirmPassword,
     });
+
+    if (createdUserName) {
+      bankStore.clearRegisterState();
+      navigate('/welcome');
+    }
   };
 
   return (
@@ -37,12 +47,12 @@ export default function LoginForm() {
           {...register('name')}
           type="text"
         />
-        {!bankStore.emptyName && !bankStore.incorrectName ? (
+        {!bankStore.registerEmptyName && !bankStore.registerIncorrectName ? (
           <p>3~7자까지 한글만 사용 가능</p>
-        ) : bankStore.emptyName ? (
-          <Error>{bankStore.emptyName}</Error>
+        ) : bankStore.registerEmptyName ? (
+          <Error>{bankStore.registerEmptyName}</Error>
         ) : (
-          <Error>{bankStore.incorrectName}</Error>
+          <Error>{bankStore.registerIncorrectName}</Error>
         )}
       </div>
       <div>
@@ -55,14 +65,14 @@ export default function LoginForm() {
           {...register('accountNumber')}
           type="text"
         />
-        {!bankStore.emptyAccountNumber && !bankStore.incorrectAccountNumber ? (
+        {!bankStore.registerEmptyAccountNumber && !bankStore.registerIncorrectAccountNumber ? (
           <p>로그인 및 거래 시 사용될 계좌번호이며 숫자만 사용 가능 (8글자)</p>
-        ) : bankStore.emptyAccountNumber ? (
-          <Error>{bankStore.emptyAccountNumber}</Error>
-        ) : bankStore.incorrectAccountNumber ? (
-          <Error>{bankStore.incorrectAccountNumber}</Error>
+        ) : bankStore.registerEmptyAccountNumber ? (
+          <Error>{bankStore.registerEmptyAccountNumber}</Error>
+        ) : bankStore.registerIncorrectAccountNumber ? (
+          <Error>{bankStore.registerIncorrectAccountNumber}</Error>
         ) : (
-          <Error>{bankStore.alreadyExistingAccountNumber}</Error>
+          <Error>{bankStore.registerAlreadyExistingAccountNumber}</Error>
         )}
       </div>
       <div>
@@ -75,12 +85,12 @@ export default function LoginForm() {
           {...register('password')}
           type="password"
         />
-        {!bankStore.emptyPassword && !bankStore.incorrectPassword ? (
+        {!bankStore.registerEmptyPassword && !bankStore.registerIncorrectPassword ? (
           <p>8글자 이상의 영문(대소문자), 숫자, 특수문자가 모두 포함되어야 함</p>
-        ) : bankStore.emptyPassword ? (
-          <Error>{bankStore.emptyPassword}</Error>
+        ) : bankStore.registerEmptyPassword ? (
+          <Error>{bankStore.registerEmptyPassword}</Error>
         ) : (
-          <Error>{bankStore.incorrectPassword}</Error>
+          <Error>{bankStore.registerIncorrectPassword}</Error>
         )}
       </div>
       <div>
@@ -93,10 +103,10 @@ export default function LoginForm() {
           {...register('confirmPassword')}
           type="password"
         />
-        {bankStore.emptyConfirmPassword ? (
-          <Error>{bankStore.emptyConfirmPassword}</Error>
+        {bankStore.registerEmptyConfirmPassword ? (
+          <Error>{bankStore.registerEmptyConfirmPassword}</Error>
         ) : (
-          <Error>{bankStore.passwordDoNotMatch}</Error>
+          <Error>{bankStore.registerPasswordDoNotMatch}</Error>
         )}
       </div>
       <button
