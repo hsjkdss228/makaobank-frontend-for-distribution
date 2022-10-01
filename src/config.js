@@ -1,5 +1,5 @@
 const config = {
-  apiBaseUrl: 'http://localhost:8000',
+  apiBaseUrl: 'https://makaobank-backend-inu.herokuapp.com',
 };
 
 export default config;
